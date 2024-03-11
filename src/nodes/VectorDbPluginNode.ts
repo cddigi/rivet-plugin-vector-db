@@ -20,14 +20,16 @@ import type {
   Rivet,
 } from "@ironclad/rivet-core";
 
+import { VectorDB } from "imvectordb";
+
 // This defines your new type of node.
-export type ExamplePluginNode = ChartNode<
-  "examplePlugin",
-  ExamplePluginNodeData
+export type VectorDbPluginNode = ChartNode<
+  "vectorDbPlugin",
+  VectorDbPluginNodeData
 >;
 
 // This defines the data that your new node will store.
-export type ExamplePluginNodeData = {
+export type VectorDbPluginNodeData = {
   someData: string;
 
   // It is a good idea to include useXInput fields for any inputs you have, so that
@@ -37,12 +39,12 @@ export type ExamplePluginNodeData = {
 
 // Make sure you export functions that take in the Rivet library, so that you do not
 // import the entire Rivet core library in your plugin.
-export function examplePluginNode(rivet: typeof Rivet) {
+export function vectorDbPluginNode(rivet: typeof Rivet) {
   // This is your main node implementation. It is an object that implements the PluginNodeImpl interface.
-  const ExamplePluginNodeImpl: PluginNodeImpl<ExamplePluginNode> = {
+  const VectorDbPluginNodeImpl: PluginNodeImpl<VectorDbPluginNode> = {
     // This should create a new instance of your node type from scratch.
-    create(): ExamplePluginNode {
-      const node: ExamplePluginNode = {
+    create(): VectorDbPluginNode {
+      const node: VectorDbPluginNode = {
         // Use rivet.newId to generate new IDs for your nodes.
         id: rivet.newId<NodeId>(),
 
@@ -52,10 +54,10 @@ export function examplePluginNode(rivet: typeof Rivet) {
         },
 
         // This is the default title of your node.
-        title: "Example Plugin Node",
+        title: "Vector Db Plugin Node",
 
         // This must match the type of your node.
-        type: "examplePlugin",
+        type: "vectorDbPlugin",
 
         // X and Y should be set to 0. Width should be set to a reasonable number so there is no overflow.
         visualData: {
@@ -70,10 +72,10 @@ export function examplePluginNode(rivet: typeof Rivet) {
     // This function should return all input ports for your node, given its data, connections, all other nodes, and the project. The
     // connection, nodes, and project are for advanced use-cases and can usually be ignored.
     getInputDefinitions(
-      data: ExamplePluginNodeData,
+      data: VectorDbPluginNodeData,
       _connections: NodeConnection[],
       _nodes: Record<NodeId, ChartNode>,
-      _project: Project
+      _project: Project,
     ): NodeInputDefinition[] {
       const inputs: NodeInputDefinition[] = [];
 
@@ -91,10 +93,10 @@ export function examplePluginNode(rivet: typeof Rivet) {
     // This function should return all output ports for your node, given its data, connections, all other nodes, and the project. The
     // connection, nodes, and project are for advanced use-cases and can usually be ignored.
     getOutputDefinitions(
-      _data: ExamplePluginNodeData,
+      _data: VectorDbPluginNodeData,
       _connections: NodeConnection[],
       _nodes: Record<NodeId, ChartNode>,
-      _project: Project
+      _project: Project,
     ): NodeOutputDefinition[] {
       return [
         {
@@ -108,17 +110,17 @@ export function examplePluginNode(rivet: typeof Rivet) {
     // This returns UI information for your node, such as how it appears in the context menu.
     getUIData(): NodeUIData {
       return {
-        contextMenuTitle: "Example Plugin",
-        group: "Example",
-        infoBoxBody: "This is an example plugin node.",
-        infoBoxTitle: "Example Plugin Node",
+        contextMenuTitle: "Vector Db Plugin",
+        group: "Data",
+        infoBoxBody: "This is a vector databse plugin node.",
+        infoBoxTitle: "Vector Db Plugin Node",
       };
     },
 
     // This function defines all editors that appear when you edit your node.
     getEditors(
-      _data: ExamplePluginNodeData
-    ): EditorDefinition<ExamplePluginNode>[] {
+      _data: VectorDbPluginNodeData,
+    ): EditorDefinition<VectorDbPluginNode>[] {
       return [
         {
           type: "string",
@@ -132,10 +134,10 @@ export function examplePluginNode(rivet: typeof Rivet) {
     // This function returns the body of the node when it is rendered on the graph. You should show
     // what the current data of the node is in some way that is useful at a glance.
     getBody(
-      data: ExamplePluginNodeData
+      data: VectorDbPluginNodeData,
     ): string | NodeBodySpec | NodeBodySpec[] | undefined {
       return rivet.dedent`
-        Example Plugin Node
+        Vector Db Plugin Node
         Data: ${data.useSomeDataInput ? "(Using Input)" : data.someData}
       `;
     },
@@ -144,15 +146,15 @@ export function examplePluginNode(rivet: typeof Rivet) {
     // a valid Outputs object, which is a map of port IDs to DataValue objects. The return value of this function
     // must also correspond to the output definitions you defined in the getOutputDefinitions function.
     async process(
-      data: ExamplePluginNodeData,
+      data: VectorDbPluginNodeData,
       inputData: Inputs,
-      _context: InternalProcessContext
+      _context: InternalProcessContext,
     ): Promise<Outputs> {
       const someData = rivet.getInputOrData(
         data,
         inputData,
         "someData",
-        "string"
+        "string",
       );
 
       return {
@@ -166,11 +168,11 @@ export function examplePluginNode(rivet: typeof Rivet) {
 
   // Once a node is defined, you must pass it to rivet.pluginNodeDefinition, which will return a valid
   // PluginNodeDefinition object.
-  const examplePluginNode = rivet.pluginNodeDefinition(
-    ExamplePluginNodeImpl,
-    "Example Plugin Node"
+  const vectorDbPluginNode = rivet.pluginNodeDefinition(
+    VectorDbPluginNodeImpl,
+    "Vector Db Plugin Node",
   );
 
   // This definition should then be used in the `register` function of your plugin definition.
-  return examplePluginNode;
+  return vectorDbPluginNode;
 }
