@@ -1,6 +1,6 @@
-// src/nodes/ExamplePluginNode.ts
-function examplePluginNode(rivet) {
-  const ExamplePluginNodeImpl = {
+// src/nodes/VectorDbPluginNode.ts
+function vectorDbPluginNode(rivet) {
+  const VectorDbPluginNodeImpl = {
     // This should create a new instance of your node type from scratch.
     create() {
       const node = {
@@ -11,9 +11,9 @@ function examplePluginNode(rivet) {
           someData: "Hello World"
         },
         // This is the default title of your node.
-        title: "Example Plugin Node",
+        title: "Vector Db Plugin Node",
         // This must match the type of your node.
-        type: "examplePlugin",
+        type: "vectorDbPlugin",
         // X and Y should be set to 0. Width should be set to a reasonable number so there is no overflow.
         visualData: {
           x: 0,
@@ -50,10 +50,10 @@ function examplePluginNode(rivet) {
     // This returns UI information for your node, such as how it appears in the context menu.
     getUIData() {
       return {
-        contextMenuTitle: "Example Plugin",
-        group: "Example",
-        infoBoxBody: "This is an example plugin node.",
-        infoBoxTitle: "Example Plugin Node"
+        contextMenuTitle: "Vector Db Plugin",
+        group: "Data",
+        infoBoxBody: "This is a vector databse plugin node.",
+        infoBoxTitle: "Vector Db Plugin Node"
       };
     },
     // This function defines all editors that appear when you edit your node.
@@ -71,7 +71,7 @@ function examplePluginNode(rivet) {
     // what the current data of the node is in some way that is useful at a glance.
     getBody(data) {
       return rivet.dedent`
-        Example Plugin Node
+        Vector Db Plugin Node
         Data: ${data.useSomeDataInput ? "(Using Input)" : data.someData}
       `;
     },
@@ -93,21 +93,21 @@ function examplePluginNode(rivet) {
       };
     }
   };
-  const examplePluginNode2 = rivet.pluginNodeDefinition(
-    ExamplePluginNodeImpl,
-    "Example Plugin Node"
+  const vectorDbPluginNode2 = rivet.pluginNodeDefinition(
+    VectorDbPluginNodeImpl,
+    "Vector Db Plugin Node"
   );
-  return examplePluginNode2;
+  return vectorDbPluginNode2;
 }
 
 // src/index.ts
 var plugin = (rivet) => {
-  const exampleNode = examplePluginNode(rivet);
-  const examplePlugin = {
+  const vectorDbNode = vectorDbPluginNode(rivet);
+  const vectorDbPlugin = {
     // The ID of your plugin should be unique across all plugins.
-    id: "example-plugin",
+    id: "vector-db-plugin",
     // The name of the plugin is what is displayed in the Rivet UI.
-    name: "Example Plugin",
+    name: "Vector Database Plugin",
     // Define all configuration settings in the configSpec object.
     configSpec: {
       exampleSetting: {
@@ -120,17 +120,17 @@ var plugin = (rivet) => {
     // Define any additional context menu groups your plugin adds here.
     contextMenuGroups: [
       {
-        id: "example",
-        label: "Example"
+        id: "vector-db-plugin",
+        label: "Vector Db"
       }
     ],
     // Register any additional nodes your plugin adds here. This is passed a `register`
     // function, which you can use to register your nodes.
     register: (register) => {
-      register(exampleNode);
+      register(vectorDbNode);
     }
   };
-  return examplePlugin;
+  return vectorDbPlugin;
 };
 var src_default = plugin;
 export {

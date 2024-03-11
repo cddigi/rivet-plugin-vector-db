@@ -1,8 +1,6 @@
 <h1 align="center"><img src="https://rivet.ironcladapp.com/img/logo-banner-wide.png" alt="Rivet Logo"></h1>
 
-# Rivet Example Plugin
-
-This project is an example of a [Rivet](https://github.com/Ironclad/rivet) plugin. It is a minimal TypeScript Rivet plugin that adds a single node called Example Plugin Node.
+# Rivet InMem VectorDb Plugin
 
 - [Using the plugin](#using-the-plugin)
   - [In Rivet](#in-rivet)
@@ -22,7 +20,7 @@ This project is an example of a [Rivet](https://github.com/Ironclad/rivet) plugi
 To use this plugin in Rivet:
 
 1. Open the plugins overlay at the top of the screen.
-2. Search for "rivet-plugin-example"
+2. Search for "rivet-plugin-vector-db"
 3. Click the "Install" button to install the plugin into your current project.
 
 ### In Code
