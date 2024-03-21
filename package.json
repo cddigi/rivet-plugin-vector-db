@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@ironclad/rivet-core": "^1.4.0",
+    "@tuesdaycrowd/sentence-transformers": "^1.0.1",
     "imvectordb": "^0.0.6"
   },
   "devDependencies": {
