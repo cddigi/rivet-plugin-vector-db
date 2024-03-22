@@ -14,7 +14,7 @@ function getAppDataLocalPath() {
   return match(platform())
     .with("win32", () => join(homedir(), "AppData", "Local", identifier))
     .with("darwin", () =>
-      join(homedir(), "Library", "Application Support", identifier)
+      join(homedir(), "Library", "Application Support", identifier),
     )
     .with("linux", () => join(homedir(), ".local", "share", identifier))
     .otherwise(() => {
@@ -31,14 +31,14 @@ const syncPlugin: esbuild.Plugin = {
   setup(build) {
     build.onEnd(async () => {
       const packageJson = JSON.parse(
-        await readFile(join(__dirname, "package.json"), "utf-8")
+        await readFile(join(__dirname, "package.json"), "utf-8"),
       );
       const pluginName = packageJson.name;
 
       const rivetPluginsDirectory = join(getAppDataLocalPath(), "plugins");
       const thisPluginDirectory = join(
         rivetPluginsDirectory,
-        `${pluginName}-latest`
+        `${pluginName}-latest`,
       );
 
       await rm(join(thisPluginDirectory, "package"), {
@@ -49,21 +49,21 @@ const syncPlugin: esbuild.Plugin = {
 
       await copy(
         join(__dirname, "dist"),
-        join(thisPluginDirectory, "package", "dist")
+        join(thisPluginDirectory, "package", "dist"),
       );
       await copyFile(
         join(__dirname, "package.json"),
-        join(thisPluginDirectory, "package", "package.json")
+        join(thisPluginDirectory, "package", "package.json"),
       );
 
       // Copy .git to mark as locally installed plugin
       await copy(
         join(__dirname, ".git"),
-        join(thisPluginDirectory, "package", ".git")
+        join(thisPluginDirectory, "package", ".git"),
       );
 
       console.log(
-        `Synced ${pluginName} to Rivet at ${thisPluginDirectory}. Refresh or restart Rivet to see changes.`
+        `Synced ${pluginName} to Rivet at ${thisPluginDirectory}. Refresh or restart Rivet to see changes.`,
       );
     });
   },
@@ -72,7 +72,7 @@ const syncPlugin: esbuild.Plugin = {
 const options = {
   entryPoints: ["src/index.ts"],
   bundle: true,
-  platform: "neutral",
+  platform: "browser",
   target: "es2020",
   outfile: "dist/bundle.js",
   format: "esm",

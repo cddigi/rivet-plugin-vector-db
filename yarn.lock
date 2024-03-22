@@ -350,7 +350,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@huggingface/jinja@npm:^0.2.1":
+"@huggingface/jinja@npm:^0.2.1, @huggingface/jinja@npm:^0.2.2":
   version: 0.2.2
   resolution: "@huggingface/jinja@npm:0.2.2"
   checksum: 8a6e3e287863d437920990afa2ca25d83c51997bd5ba0325ea90633e52469c2d901178cbd758cc362b45ad1c9521fccf372884fd59e58d2916d6b2e5bb15f776
@@ -597,6 +597,21 @@ __metadata:
   dependencies:
     web-streams-polyfill: ^3.1.1
   checksum: 247cc704b5dc18c3e7dac70c02efbbca83357fc237a0b8b2011814a246e6710a0dd403770b756d763ef545c7a118524e405b76cb7c7ac00afea0250171fdd68c
+  languageName: node
+  linkType: hard
+
+"@xenova/transformers@npm:^2.16.1":
+  version: 2.16.1
+  resolution: "@xenova/transformers@npm:2.16.1"
+  dependencies:
+    "@huggingface/jinja": ^0.2.2
+    onnxruntime-node: 1.14.0
+    onnxruntime-web: 1.14.0
+    sharp: ^0.32.0
+  dependenciesMeta:
+    onnxruntime-node:
+      optional: true
+  checksum: 6528223ac0cbf6a033c4bc7583532c08bd4cb175c17c1b563bfccab8215ffe3c92c3a902002d2b2b5323da729fdcb90afbccfc7f4d17499fd2e214e028b2e25d
   languageName: node
   linkType: hard
 
@@ -3351,12 +3366,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rivet-plugin-example@workspace:.":
+"rivet-plugin-vector-db@workspace:.":
   version: 0.0.0-use.local
-  resolution: "rivet-plugin-example@workspace:."
+  resolution: "rivet-plugin-vector-db@workspace:."
   dependencies:
     "@ironclad/rivet-core": ^1.4.0
     "@tuesdaycrowd/sentence-transformers": ^1.0.1
+    "@xenova/transformers": ^2.16.1
     esbuild: ^0.19.2
     imvectordb: ^0.0.6
     npm-run-all: ^4.1.5

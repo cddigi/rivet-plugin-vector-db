@@ -1,12 +1,10 @@
 {
-  "name": "rivet-plugin-example",
+  "name": "rivet-plugin-vector-db",
   "packageManager": "yarn@3.5.0",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "type": "module",
   "main": "dist/bundle.js",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "build": "tsc -b && tsx bundle.ts",
     "dev": "run-p watch:tsc watch:esbuild:sync",
