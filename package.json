@@ -1,7 +1,7 @@
 {
-  "name": "rivet-plugin-example",
+  "name": "rivet-plugin-vector-db",
   "packageManager": "yarn@3.5.0",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "type": "module",
   "main": "dist/bundle.js",
   "files": [
@@ -16,8 +16,7 @@
     "publish": "yarn npm publish --access public"
   },
   "dependencies": {
-    "@ironclad/rivet-core": "^1.4.0",
-    "@tuesdaycrowd/sentence-transformers": "^1.0.1",
+    "@ironclad/rivet-core": "^1.17.0",
     "imvectordb": "^0.0.6"
   },
   "devDependencies": {
