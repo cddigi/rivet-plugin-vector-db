@@ -16,8 +16,7 @@ import type {
   Rivet,
 } from "@ironclad/rivet-core";
 
-import { VectorDB } from "imvectordb";
-import { db } from "../db.js";
+import { create, search, insert } from "@orama/orama";
 
 export type AddVectorNode = ChartNode<
   "addVector",
@@ -65,11 +64,15 @@ export const addVectorNode = (rivet: typeof Rivet) => {
         dataType: "vector",
         title: "Embedding",
       });
-      inputs.push({
-        id: "metadata" as PortId,
-        dataType: "any[]",
-        title: "Metadata",
-      });
+      if (data.useMetadataInput) {
+        inputs.push({
+          id: "metadata" as PortId,
+          dataType: "object",
+          title: "Metadata",
+          description:
+            "Metadata to attach to the item. Must be an object with string values.",
+        });
+      }
 
       return inputs;
     },
@@ -113,16 +116,48 @@ export const addVectorNode = (rivet: typeof Rivet) => {
         Add Vector Node
         ID: ${data.id ? "(Using Input)" : data.id}
         Metadata: ${data.metadata ? "(Using Input)" : data.metadata}
-      `;
+        `;
     },
 
-    async process(data, inputData, context): Promise<Outputs> {
-      const someData = rivet.getInputOrData(data, inputData, "id", "string");
+    async process(data, inputData, _context): Promise<Outputs> {
+      const id = rivet.getInputOrData(data, inputData, "id", "string");
+
+      const embedding = rivet.getInputOrData(
+        data,
+        inputData,
+        "embedding",
+        "vector",
+      );
+
+      const metadata = rivet.getInputOrData(
+        data,
+        inputData,
+        "metadata",
+        "any[]",
+      );
+
+      const vdb = create({
+        schema: {
+          name: "string",
+          body: "string",
+          embedding: "vector[768]",
+        } as const,
+      });
+
+      // await insert(vdb, {
+      //   name: id,
+      //   body: "hello world",
+      //   embedding: embedding,
+      // });
+
+      // const searchResult = await search(vdb, {
+      //   term: "earth",
+      // });
 
       return {
-        ["someData" as PortId]: {
+        ["id" as PortId]: {
           type: "string",
-          value: someData,
+          value: id,
         },
       };
     },
