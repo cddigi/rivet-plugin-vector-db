@@ -22,7 +22,9 @@ export type AddVectorNode = ChartNode<
   "addVector",
   {
     id: string;
+    useIdInput?: boolean;
     embedding: number[];
+    useEmbeddingInput?: boolean;
     metadata: { key: string; value: any }[];
     useMetadataInput?: boolean;
   }
@@ -36,10 +38,10 @@ export const addVectorNode = (rivet: typeof Rivet) => {
 
         data: {
           id: "",
-          embedding: [],
+          embedding: [0, 1],
           metadata: [],
         },
-        title: "Add Vector Embedding Node",
+        title: "Add Vector Embedding",
         type: "addVector",
         visualData: {
           x: 0,
@@ -51,19 +53,33 @@ export const addVectorNode = (rivet: typeof Rivet) => {
       return node;
     },
 
-    getInputDefinitions(data): NodeInputDefinition[] {
+    getInputDefinitions(
+      data,
+      _connections,
+      _nodes,
+      _project,
+    ): NodeInputDefinition[] {
       const inputs: NodeInputDefinition[] = [];
 
-      inputs.push({
-        id: "id" as PortId,
-        dataType: "string",
-        title: "ID",
-      });
-      inputs.push({
-        id: "embedding" as PortId,
-        dataType: "vector",
-        title: "Embedding",
-      });
+      if (data.useIdInput) {
+        inputs.push({
+          id: "id" as PortId,
+          dataType: "string",
+          title: "ID",
+          required: true,
+        });
+      }
+
+      if (data.useEmbeddingInput) {
+        inputs.push({
+          id: "embedding" as PortId,
+          dataType: "vector",
+          title: "Embedding",
+          // required: true,
+          description: "The text embedding",
+        });
+      }
+
       if (data.useMetadataInput) {
         inputs.push({
           id: "metadata" as PortId,
@@ -77,17 +93,32 @@ export const addVectorNode = (rivet: typeof Rivet) => {
       return inputs;
     },
 
-    getOutputDefinitions(): NodeOutputDefinition[] {
+    getOutputDefinitions(
+      _data,
+      _connections,
+      _nodes,
+      _project,
+    ): NodeOutputDefinition[] {
       return [
         {
           id: "id" as PortId,
           dataType: "string",
           title: "ID",
         },
+        {
+          id: "score" as PortId,
+          dataType: "number",
+          title: "Score",
+        },
+        {
+          id: "embedding" as PortId,
+          dataType: "vector",
+          title: "Embedding",
+        },
       ];
     },
 
-    getUIData(): NodeUIData {
+    getUIData(_context): NodeUIData {
       return {
         contextMenuTitle: "Add Vector",
         group: "Vector DB",
@@ -97,8 +128,20 @@ export const addVectorNode = (rivet: typeof Rivet) => {
       };
     },
 
-    getEditors() {
+    getEditors(_data): EditorDefinition<AddVectorNode>[] {
       return [
+        {
+          type: "string",
+          dataKey: "id",
+          label: "ID",
+          useInputToggleDataKey: "useIdInput",
+        },
+        {
+          type: "anyData",
+          dataKey: "embedding",
+          label: "Embedding",
+          useInputToggleDataKey: "useEmbeddingInput",
+        },
         {
           type: "keyValuePair",
           dataKey: "metadata",
@@ -111,32 +154,43 @@ export const addVectorNode = (rivet: typeof Rivet) => {
       ];
     },
 
-    getBody(data): string | NodeBodySpec | NodeBodySpec[] | undefined {
+    getBody(
+      data,
+      _context,
+    ): string | NodeBodySpec | NodeBodySpec[] | undefined {
       return rivet.dedent`
         Add Vector Node
-        ID: ${data.id ? "(Using Input)" : data.id}
+        ID: ${data.id}
         Metadata: ${data.metadata ? "(Using Input)" : data.metadata}
-        `;
+        Vector: [${data.embedding}]
+      `;
     },
 
     async process(data, inputData, _context): Promise<Outputs> {
-      const id = rivet.getInputOrData(data, inputData, "id", "string");
-
       const embedding = rivet.getInputOrData(
         data,
         inputData,
         "embedding",
         "vector",
+        "useEmbeddingInput",
       );
 
-      const metadata = rivet.getInputOrData(
+      const id = rivet.getInputOrData(
         data,
         inputData,
-        "metadata",
-        "any[]",
+        "id",
+        "string",
+        "useIdInput",
       );
 
-      const vdb = create({
+      // const metadata = rivet.getInputOrData(
+      //   data,
+      //   inputData,
+      //   "metadata",
+      //   "any[]",
+      // );
+
+      const vdb = await create({
         schema: {
           name: "string",
           body: "string",
@@ -144,20 +198,28 @@ export const addVectorNode = (rivet: typeof Rivet) => {
         } as const,
       });
 
-      // await insert(vdb, {
-      //   name: id,
-      //   body: "hello world",
-      //   embedding: embedding,
-      // });
+      await insert(vdb, {
+        name: id,
+        body: "hello world",
+        embedding: embedding,
+      });
 
-      // const searchResult = await search(vdb, {
-      //   term: "earth",
-      // });
+      const searchResult = await search(vdb, {
+        term: "hello",
+      });
 
       return {
         ["id" as PortId]: {
           type: "string",
-          value: id,
+          value: searchResult.hits[0].id,
+        },
+        ["score" as PortId]: {
+          type: "number",
+          value: searchResult.hits[0].score,
+        },
+        ["document" as PortId]: {
+          type: "any",
+          value: searchResult.hits[0].document,
         },
       };
     },
